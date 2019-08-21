@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ImagesService {
-    private sets: Map<string, number> = new Map([
+    private readonly timestamp = Date.now();
+
+    private sets = new Map([
         ['a', 15]
     ]);
 
@@ -10,7 +12,7 @@ export class ImagesService {
         const count = this.sets.get(name);
         const result = [];
         for (let i = 1; i <= count; i++) {
-            result.push(`assets/images/${name}/${i}.png`);
+            result.push(`assets/images/${name}/${i}.png?v=${this.timestamp}`);
         }
         return result;
     }

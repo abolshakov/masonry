@@ -1,20 +1,20 @@
 .container {
-    flex-direction: row;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .image-wrapper {
-    line-height: 0;
+  line-height: 0;
 }
 
 @for $i from 0 to 30 {
-    .container .image-wrapper:nth-child(#{$i}) {
-        background: rgb(random(255), random(255), random(255));
-    }
+  .container .image-wrapper:nth-child(#{$i + 1}) {
+    background: rgb(random(255), random(255), random(255));
+  }
 }
 
 img {
-    opacity: 0.5;
+  opacity: 0.5;
 }

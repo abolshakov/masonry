@@ -4,10 +4,11 @@ import {
   ElementRef,
   QueryList,
   ViewChildren
-  } from '@angular/core';
+} from '@angular/core';
 import { ImageInfoService } from '../shared/image-info/image-info.service';
 import { ImagesService as ImageSourceService } from '../shared/image-source.service';
 import { take } from 'rxjs/operators';
+import { MasonryService } from '../shared/masonry/masonry.service';
 
 @Component({
   selector: 'msn-wall',
@@ -23,13 +24,17 @@ export class WallComponent implements AfterViewInit {
     return this.provider.imageSet('a');
   }
 
-  constructor(private provider: ImageSourceService, private info: ImageInfoService) { }
+  constructor(
+    private provider: ImageSourceService,
+    private estimator: ImageInfoService,
+    private masonry: MasonryService
+  ) { }
 
   public ngAfterViewInit() {
-    this.info.process(this.imageRefs.map(r => r.nativeElement))
+    this.estimator.process(this.imageRefs.map(r => r.nativeElement))
       .pipe(take(1))
       .subscribe(result => {
-        console.log('RESULT', result);
+        this.masonry.construct(result);
         this.loading = false;
       });
   }

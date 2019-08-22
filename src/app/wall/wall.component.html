@@ -1,6 +1,6 @@
 <div class="container" [ngClass]="{'hidden': loading}">
   <div *ngFor="let image of images; let index=index" class="image-wrapper">
-    <img src="{{image}}" height="100" #img />
+    <img src="{{image}}" #img />
   </div>
 </div>
 <div *ngIf="loading">LOADING...</div>

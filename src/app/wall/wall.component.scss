@@ -11,8 +11,8 @@
 
 @for $i from 0 to 30 {
     .container .image-wrapper:nth-child(#{$i + 1}) {
-        $min: 100;
-        $max: 140;
+        $min: 96;
+        $max: 144;
         background: rgb($min + random($max), $min + random($max), $min + random($max));
     }
 }

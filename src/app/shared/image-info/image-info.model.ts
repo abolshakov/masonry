@@ -9,36 +9,36 @@ export class ImageInfo implements ElementInfo {
     }
 
     public get ratio(): number {
-        return this.size.height ? this.size.width / this.size.height : 0;
+        return this.size.crossAxis ? this.size.mainAxis / this.size.crossAxis : 0;
     }
 
     constructor(public image: HTMLImageElement) {
         this._size = {
-            width: this.image.width,
-            height: this.image.height
+            mainAxis: this.image.width,
+            crossAxis: this.image.height
         };
     }
 
     public resise(size: Size) {
-        if (!size.width && !size.height) {
+        if (!size.mainAxis && !size.crossAxis) {
             return;
         }
         const ratio = this.ratio;
-        if (size.width) {
-            this.image.setAttribute('width', size.width.toString());
-            this._size.width = size.width;
+        if (size.mainAxis) {
+            this.image.setAttribute('width', size.mainAxis.toString());
+            this._size.mainAxis = size.mainAxis;
         }
-        if (size.height) {
-            this.image.setAttribute('height', size.height.toString());
-            this._size.height = size.height;
+        if (size.crossAxis) {
+            this.image.setAttribute('height', size.crossAxis.toString());
+            this._size.crossAxis = size.crossAxis;
         }
-        if (size.width && size.height) {
+        if (size.mainAxis && size.crossAxis) {
             return;
         }
-        if (!size.width) {
-            this._size.width = Math.round(ratio * size.height);
+        if (!size.mainAxis) {
+            this._size.mainAxis = Math.round(ratio * size.crossAxis);
         } else {
-            this._size.height = ratio ? Math.round(size.width / ratio) : 0;
+            this._size.crossAxis = ratio ? Math.round(size.mainAxis / ratio) : 0;
         }
     }
 }

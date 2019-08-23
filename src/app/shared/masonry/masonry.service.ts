@@ -5,6 +5,6 @@ import { Injectable } from '@angular/core';
 export class MasonryService {
     public construct(elements: ElementInfo[]) {
         console.log('CONSTRUCTING FROM', elements);
-        elements.forEach(x => x.resise({ height: 150 }));
+        elements.forEach(x => x.resise({ crossAxis: 150 }));
     }
 }

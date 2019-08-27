@@ -2,33 +2,39 @@ import { ElementInfo } from './element-info.interface';
 import { Size } from './size.mode';
 
 export class Line {
-    private elements: ElementInfo[];
-    private freeSpace: number;
+    private _elements: ElementInfo[] = [];
+    private _freeSpace: number;
 
-    public previous?: Line;
-    public next?: Line;
+    public get freeSpace(): number {
+        return this._freeSpace;
+    }
+
+    public get elements(): ElementInfo[] {
+        return this._elements;
+    }
 
     public constructor(private size: Size) {
-        this.freeSpace = this.size.mainAxis;
+        this._freeSpace = this.size.mainAxis;
     }
 
     public assign(element: ElementInfo): boolean {
-        if (this.freeSpace <= 0) {
+        if (this._freeSpace <= 0) {
             return false;
         }
-        element.resise({ crossAxis: this.size.crossAxis });
-        const remainingSpace = this.freeSpace - element.size.mainAxis;
+        element.resise(null, this.size.height);
+        const elementSize = new Size(element.width, element.height, this.size.direction);
+        const remainingSpace = this._freeSpace - elementSize.mainAxis;
         if (remainingSpace < 0) {
-            if (this.elements.length === 0) {
-                element.resise({ mainAxis: this.size.mainAxis });
-                this.elements.push(element);
-                this.freeSpace = 0;
+            if (this._elements.length === 0) {
+                element.resise(this.size.mainAxis, null);
+                this._elements.push(element);
+                this._freeSpace = 0;
                 return true;
             }
             return false;
         }
-        this.elements.push(element);
-        this.freeSpace = remainingSpace;
+        this._elements.push(element);
+        this._freeSpace = remainingSpace;
         return true;
     }
 

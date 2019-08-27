@@ -1,9 +1,6 @@
-import { Size } from './size.mode';
-import { Direction } from './direction.enum';
-
 export interface ElementInfo {
-    readonly size: Size;
-    readonly ratio: number;
-    direction: Direction;
-    resise(size: Size): void;
+    readonly width: number;
+    readonly height: number;
+
+    resise(width: number | null, height: number | null): void;
 }

@@ -1,26 +1,32 @@
+.space-holder {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .container {
-    flex-direction: row;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .image-wrapper {
-    line-height: 0;
+  line-height: 0;
 }
 
 @for $i from 0 to 30 {
-    .container .image-wrapper:nth-child(#{$i + 1}) {
-        $min: 96;
-        $max: 144;
-        background: rgb($min + random($max), $min + random($max), $min + random($max));
-    }
+  .container .image-wrapper:nth-child(#{$i + 1}) {
+    $min: 96;
+    $max: 144;
+    background: rgb($min + random($max), $min + random($max), $min + random($max));
+  }
 }
 
 img {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .hidden {
-    display: none;
+  visibility: hidden;
 }

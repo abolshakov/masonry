@@ -1,57 +1,48 @@
 import { ElementInfo } from '../masonry/element-info.interface';
-import { Size } from '../masonry/size.mode';
-import { Direction } from '../masonry/direction.enum';
 
 export class ImageInfo implements ElementInfo {
-    private _size: Size;
+    private _width: number;
+    private _height: number;
 
-    public direction: Direction;
+    public index: number;
 
-    public get size(): Size {
-        if (!this._size) {
-            this._size = {
-                mainAxis: this.image[this.mainAxis],
-                crossAxis: this.image[this.crossAxis]
-            };
-        }
-        return this._size;
+    public get width(): number {
+        return this._width;
     }
 
-    public get ratio(): number {
-        return this.size.crossAxis ? this.size.mainAxis / this.size.crossAxis : 0;
+    public get height(): number {
+        return this._height;
     }
 
-    private get mainAxis(): string {
-        return this.direction === Direction.row ? 'width' : 'height';
-    }
-
-    private get crossAxis(): string {
-        return this.direction === Direction.row ? 'height' : 'width';
+    private get ratio(): number {
+        return this.height ? this.width / this.height : 0;
     }
 
     constructor(public image: HTMLImageElement) {
+        this._width = this.image.width;
+        this._height = this.image.height;
     }
 
-    public resise(size: Size) {
-        if (!size.mainAxis && !size.crossAxis) {
+    public resise(width: number | null, height: number | null) {
+        if (!width && !height) {
             return;
         }
         const ratio = this.ratio;
-        if (size.mainAxis) {
-            this.image.setAttribute(this.mainAxis, size.mainAxis.toString());
-            this._size.mainAxis = size.mainAxis;
+        if (width) {
+            this.image.setAttribute('width', width.toString());
+            this._width = width;
         }
-        if (size.crossAxis) {
-            this.image.setAttribute(this.crossAxis, size.crossAxis.toString());
-            this._size.crossAxis = size.crossAxis;
+        if (height) {
+            this.image.setAttribute('height', height.toString());
+            this._height = height;
         }
-        if (size.mainAxis && size.crossAxis) {
+        if (width && height) {
             return;
         }
-        if (!size.mainAxis) {
-            this._size.mainAxis = Math.round(ratio * size.crossAxis);
+        if (!width) {
+            this._width = Math.round(ratio * height);
         } else {
-            this._size.crossAxis = ratio ? Math.round(size.mainAxis / ratio) : 0;
+            this._height = ratio ? Math.round(width / ratio) : 0;
         }
     }
 }

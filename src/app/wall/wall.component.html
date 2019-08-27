@@ -1,6 +1,8 @@
-<div class="container" [ngClass]="{'hidden': loading}">
-  <div *ngFor="let image of images; let index=index" class="image-wrapper">
-    <img src="{{image}}" #img />
+<div class="space-holder" #container>
+  <div *ngIf="loading">LOADING...</div>
+  <div class="container" [ngClass]="{'hidden': loading}">
+    <div *ngFor="let image of images; let index=index" class="image-wrapper">
+      <img src="{{image}}" #img />
+    </div>
   </div>
 </div>
-<div *ngIf="loading">LOADING...</div>

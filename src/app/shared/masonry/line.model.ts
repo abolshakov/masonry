@@ -21,12 +21,13 @@ export class Line {
         if (this._freeSpace <= 0) {
             return false;
         }
-        element.resise(null, this.size.height);
+        element[this.size.crossAxisName] = this.size.crossAxis;
         const elementSize = new Size(element.width, element.height, this.size.direction);
         const remainingSpace = this._freeSpace - elementSize.mainAxis;
         if (remainingSpace < 0) {
+            element.rollbackChanges();
             if (this._elements.length === 0) {
-                element.resise(this.size.mainAxis, null);
+                element[this.size.mainAxisName] = this.size.mainAxis;
                 this._elements.push(element);
                 this._freeSpace = 0;
                 return true;
@@ -39,6 +40,17 @@ export class Line {
     }
 
     public fit() {
-
+        let cross: number;
+        if (this.freeSpace && this.size.mainAxis && this.size.crossAxis) {
+            const ratio = (this.size.mainAxis - this.freeSpace) / this.size.crossAxis;
+            cross = Math.round(this.size.mainAxis / ratio);
+        }
+        this.elements.forEach(x => {
+            if (cross) {
+                x.rollbackChanges();
+                x[this.size.crossAxisName] = cross;
+            }
+            x.commitChanges();
+        });
     }
 }

@@ -1,6 +1,6 @@
 export interface ElementInfo {
-    readonly width: number;
-    readonly height: number;
-
-    resise(width: number | null, height: number | null): void;
+    width: number;
+    height: number;
+    commitChanges(): void;
+    rollbackChanges(): void;
 }

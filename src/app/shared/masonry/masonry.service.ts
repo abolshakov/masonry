@@ -8,40 +8,32 @@ import { Wall } from './wall.model';
 
 @Injectable({ providedIn: 'root' })
 export class MasonryService {
-    private cache: Wall[];
-
     constructor(private strategy: OptimizationStrategy) { }
 
     public construct(elements: ElementInfo[], lineWidth: number, lineHeight: number, direction: Direction) {
-        this.cache = [];
         const size = new Size(lineWidth, lineHeight, direction);
-        const wall = this.build(elements, size);
+        const wall = this.build(elements, size, [new Wall()]);
+        wall.fitLines();
         console.log('THE WALL', wall);
     }
 
-    private build(elements: ElementInfo[], size: Size): Wall {
-        if (this.cache.length > elements.length - 1) {
-            return this.cache[elements.length - 1].clone();
+    private build(elements: ElementInfo[], size: Size, cache: Wall[]): Wall {
+        if (cache.length > elements.length) {
+            return cache[elements.length].clone();
         }
         let optimalWall: Wall;
         let optimalValue = 0;
 
         for (let i = elements.length; i > 0; i--) {
-            let firstLine = new Line(size);
+            const firstLine = new Line(size);
             for (let j = 0; j < i; j++) {
                 if (!firstLine.assign(elements[j])) {
-                    i = j + 1;
-                    firstLine = null;
+                    i = j - 1;
                     break;
                 }
             }
-            if (!firstLine) {
-                continue;
-            }
-            const remainingCount = elements.length - i;
-            const wall = remainingCount === 0
-                ? new Wall()
-                : this.build(elements.slice(-remainingCount), size);
+            const remainingCount = elements.length - firstLine.elements.length;
+            const wall = this.build(remainingCount ? elements.slice(-remainingCount) : [], size, cache);
             wall.prepend(firstLine);
             const value = this.strategy.evaluate(wall, size);
             if (value > optimalValue) {
@@ -49,7 +41,7 @@ export class MasonryService {
                 optimalValue = value;
             }
         }
-        this.cache.push(optimalWall);
+        cache.push(optimalWall);
         return optimalWall;
     }
 }

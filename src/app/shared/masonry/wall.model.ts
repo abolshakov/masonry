@@ -17,6 +17,10 @@ export class Wall {
         return wall;
     }
 
+    public fitLines() {
+        this._lines.forEach(x => x.fit());
+    }
+
     public prepend(line: Line) {
         this._lines.unshift(line);
     }

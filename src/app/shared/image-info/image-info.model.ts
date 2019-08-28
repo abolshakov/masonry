@@ -35,13 +35,8 @@ export class ImageInfo implements ElementInfo {
     }
 
     public commitChanges() {
-        console.log('COMMIT', this.width, this.height, this.image.width, this.image.height);
-        if (this.width !== this.image.width) {
-            this.image.setAttribute('width', this.width.toString());
-        }
-        if (this.height !== this.image.height) {
-            this.image.setAttribute('height', this.height.toString());
-        }
+        this.image.setAttribute('width', this.width.toString());
+        this.image.setAttribute('height', this.height.toString());
     }
 
     private initSize() {
@@ -64,9 +59,9 @@ export class ImageInfo implements ElementInfo {
             return;
         }
         if (!width) {
-            this._width = Math.round(ratio * height);
+            this._width = ratio * height;
         } else {
-            this._height = ratio ? Math.round(width / ratio) : 0;
+            this._height = ratio ? (width / ratio) : 0;
         }
     }
 }

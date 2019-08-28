@@ -7,14 +7,14 @@ import {
   QueryList,
   ViewChild,
   ViewChildren
-  } from '@angular/core';
+} from '@angular/core';
 import {
   debounceTime,
   distinct,
   map,
   take,
   takeUntil
-  } from 'rxjs/operators';
+} from 'rxjs/operators';
 import { Direction } from '../shared/masonry/direction.enum';
 import { ElementInfo } from '../shared/masonry/element-info.interface';
 import { fromEvent, ReplaySubject } from 'rxjs';
@@ -43,7 +43,7 @@ export class WallComponent implements AfterViewInit, OnDestroy {
   }
 
   private get clientWidth(): number {
-    return this.containerRef.nativeElement.clientWidth;
+    return this.containerRef.nativeElement.clientWidth - 2;
   }
 
   constructor(
@@ -71,7 +71,11 @@ export class WallComponent implements AfterViewInit, OnDestroy {
       .subscribe(() => {
         this.elemnts
           .pipe(take(1))
-          .subscribe(elements => this.construct(elements));
+          .subscribe(elements => {
+            this.loading = true;
+            this.construct(elements);
+            this.loading = false;
+          });
       });
   }
 

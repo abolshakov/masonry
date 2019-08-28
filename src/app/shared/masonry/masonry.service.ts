@@ -28,7 +28,7 @@ export class MasonryService {
             const firstLine = new Line(size);
             for (let j = 0; j < i; j++) {
                 if (!firstLine.assign(elements[j])) {
-                    i = j - 1;
+                    i = j;
                     break;
                 }
             }

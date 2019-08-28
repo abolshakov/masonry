@@ -21,30 +21,34 @@ export class Line {
         if (this._freeSpace <= 0) {
             return false;
         }
-        const originalValue = element[this.size.crossAxisName];
-        element[this.size.crossAxisName] = this.size.crossAxis;
-        const elementSize = new Size(element.width, element.height, this.size.direction);
+        const clone = element.clone();
+        clone[this.size.crossAxisName] = this.size.crossAxis;
+        const elementSize = new Size(clone.width, clone.height, this.size.direction);
         const remainingSpace = this._freeSpace - elementSize.mainAxis;
         if (remainingSpace < 0) {
-            element[this.size.crossAxisName] = originalValue;
             if (this._elements.length === 0) {
-                element[this.size.mainAxisName] = this.size.mainAxis;
-                this._elements.push(element);
+                clone[this.size.mainAxisName] = this.size.mainAxis;
+                this._elements.push(clone);
                 this._freeSpace = 0;
                 return true;
             }
             return false;
         }
-        this._elements.push(element);
+        this._elements.push(clone);
         this._freeSpace = remainingSpace;
         return true;
     }
 
     public fit() {
-        const ratio = (this.size.mainAxis - this.freeSpace) / this.size.crossAxis;
-        const cross = this.size.mainAxis / ratio;
+        let cross: number;
+        if (this.freeSpace) {
+            const ratio = (this.size.mainAxis - this.freeSpace) / this.size.crossAxis;
+            cross = this.size.mainAxis / ratio;
+        }
         this.elements.forEach(x => {
-            x[this.size.crossAxisName] = cross;
+            if (cross) {
+                x[this.size.crossAxisName] = cross;
+            }
             x.commitChanges();
         });
     }

@@ -30,8 +30,8 @@ export class ImageInfo implements ElementInfo {
         this.initSize();
     }
 
-    public rollbackChanges() {
-        this.initSize();
+    public clone(): ElementInfo {
+        return new ImageInfo(this.image);
     }
 
     public commitChanges() {

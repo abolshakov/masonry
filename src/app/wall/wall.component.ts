@@ -28,8 +28,6 @@ import { MasonryService } from '../shared/masonry/masonry.service';
   styleUrls: ['./wall.component.scss']
 })
 export class WallComponent implements AfterViewInit, OnDestroy {
-  private readonly minLineHeight = 200;
-
   private unsubscribe = new EventEmitter();
   private elemnts = new ReplaySubject<ElementInfo[]>(1);
 
@@ -43,7 +41,7 @@ export class WallComponent implements AfterViewInit, OnDestroy {
   }
 
   private get clientWidth(): number {
-    return this.containerRef.nativeElement.clientWidth - 2;
+    return this.containerRef.nativeElement.clientWidth;
   }
 
   constructor(
@@ -84,6 +82,6 @@ export class WallComponent implements AfterViewInit, OnDestroy {
   }
 
   private construct(elements: ElementInfo[]) {
-    this.masonry.construct(elements, this.clientWidth, this.minLineHeight, Direction.row);
+    this.masonry.construct(elements, this.clientWidth, Math.min(window.innerHeight, window.innerWidth) / 3, Direction.row);
   }
 }

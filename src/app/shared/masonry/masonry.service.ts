@@ -8,13 +8,15 @@ import { Wall } from './wall.model';
 
 @Injectable({ providedIn: 'root' })
 export class MasonryService {
+    private readonly roundingСompensation = 1;
+
     constructor(private strategy: OptimizationStrategy) { }
 
     public construct(elements: ElementInfo[], lineWidth: number, lineHeight: number, direction: Direction) {
         const size = new Size(lineWidth, lineHeight, direction);
+        size.mainAxis -= this.roundingСompensation;
         const wall = this.build(elements, size, [new Wall()]);
         wall.fitLines();
-        console.log('THE WALL', wall);
     }
 
     private build(elements: ElementInfo[], size: Size, cache: Wall[]): Wall {

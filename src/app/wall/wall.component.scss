@@ -11,12 +11,8 @@
   justify-content: flex-start;
 }
 
-.image-wrapper {
-  line-height: 0;
-}
-
 @for $i from 0 to 30 {
-  .container .image-wrapper:nth-child(#{$i + 1}) {
+  .container img:nth-child(#{$i + 1}) {
     $min: 96;
     $max: 144;
     background: rgb($min + random($max), $min + random($max), $min + random($max));
@@ -25,6 +21,7 @@
 
 img {
   opacity: 0.5;
+  margin: 4px;
 }
 
 .hidden {

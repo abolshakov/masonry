@@ -4,8 +4,6 @@ export class ImageInfo implements ElementInfo {
     private _width: number;
     private _height: number;
 
-    public index: number;
-
     public get width(): number {
         return this._width;
     }
@@ -26,22 +24,13 @@ export class ImageInfo implements ElementInfo {
         return this.height ? this.width / this.height : 0;
     }
 
-    constructor(public image: HTMLImageElement) {
-        this.initSize();
+    constructor(initialWidth: number, initialHeight: number) {
+        this._width = initialWidth;
+        this._height = initialHeight;
     }
 
     public clone(): ElementInfo {
-        return new ImageInfo(this.image);
-    }
-
-    public commitChanges() {
-        this.image.setAttribute('width', this.width.toString());
-        this.image.setAttribute('height', this.height.toString());
-    }
-
-    private initSize() {
-        this._width = this.image.width;
-        this._height = this.image.height;
+        return new ImageInfo(this.width, this.height);
     }
 
     private resise(width: number | null, height: number | null) {

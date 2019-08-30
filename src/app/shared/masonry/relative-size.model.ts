@@ -1,6 +1,6 @@
 import { Direction } from './direction.enum';
 
-export class Size {
+export class RelativeSize {
     public get mainAxis(): number {
         return this[this.mainAxisName];
     }

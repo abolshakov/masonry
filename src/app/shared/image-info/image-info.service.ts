@@ -1,20 +1,32 @@
-import { Injectable } from '@angular/core';
+import { ElementInfo } from '../masonry/element-info.interface';
 import { ImageInfo } from './image-info.model';
-import { from, Observable, fromEvent, forkJoin } from 'rxjs';
-import { switchMap, tap, take, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ImageInfoService {
-    public process(images: HTMLImageElement[]): Observable<ImageInfo[]> {
-        const loading: Observable<ImageInfo>[] = [];
-        return from(images)
-            .pipe(
-                tap(image => loading.push(fromEvent(image, 'load')
-                    .pipe(
-                        take(1),
-                        map(() => new ImageInfo(image))
-                    ))),
-                switchMap(() => forkJoin(loading))
-            );
+    public retrive(images: HTMLImageElement[]): ElementInfo[] {
+        return images.map(image => {
+            const margins = this.margins(image);
+            const width = image.naturalWidth + margins.width;
+            const height = image.naturalHeight + margins.height;
+            return new ImageInfo(width, height);
+        });
+    }
+
+    public update(images: HTMLImageElement[], info: ElementInfo[]) {
+        images.forEach((image, i) => {
+            const margins = this.margins(image);
+            const width = info[i].width - margins.width;
+            const height = info[i].height - margins.height;
+            image.setAttribute('width', width.toString());
+            image.setAttribute('height', height.toString());
+        });
+    }
+
+    private margins(image: HTMLImageElement): { width: number, height: number } {
+        const style = window.getComputedStyle(image);
+        const width = Number.parseFloat(style.marginLeft) + Number.parseFloat(style.marginRight);
+        const height = Number.parseFloat(style.marginTop) + Number.parseFloat(style.marginBottom);
+        return { width, height };
     }
 }

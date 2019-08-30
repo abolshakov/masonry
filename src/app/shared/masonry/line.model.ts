@@ -1,5 +1,5 @@
 import { ElementInfo } from './element-info.interface';
-import { Size } from './size.mode';
+import { RelativeSize } from './relative-size.model';
 
 export class Line {
     private _elements: ElementInfo[] = [];
@@ -13,7 +13,7 @@ export class Line {
         return this._elements;
     }
 
-    public constructor(private size: Size) {
+    public constructor(private size: RelativeSize) {
         this._freeSpace = this.size.mainAxis;
     }
 
@@ -23,8 +23,8 @@ export class Line {
         }
         const clone = element.clone();
         clone[this.size.crossAxisName] = this.size.crossAxis;
-        const elementSize = new Size(clone.width, clone.height, this.size.direction);
-        const remainingSpace = this._freeSpace - elementSize.mainAxis;
+        const size = new RelativeSize(clone.width, clone.height, this.size.direction);
+        const remainingSpace = this._freeSpace - size.mainAxis;
         if (remainingSpace < 0) {
             if (this._elements.length === 0) {
                 clone[this.size.mainAxisName] = this.size.mainAxis;
@@ -40,16 +40,11 @@ export class Line {
     }
 
     public fit() {
-        let cross: number;
-        if (this.freeSpace) {
-            const ratio = (this.size.mainAxis - this.freeSpace) / this.size.crossAxis;
-            cross = this.size.mainAxis / ratio;
+        if (!this.freeSpace) {
+            return;
         }
-        this.elements.forEach(x => {
-            if (cross) {
-                x[this.size.crossAxisName] = cross;
-            }
-            x.commitChanges();
-        });
+        const ratio = (this.size.mainAxis - this.freeSpace) / this.size.crossAxis;
+        const cross = this.size.mainAxis / ratio;
+        this.elements.forEach(x => x[this.size.crossAxisName] = cross);
     }
 }

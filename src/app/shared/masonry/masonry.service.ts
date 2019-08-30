@@ -3,7 +3,7 @@ import { ElementInfo } from './element-info.interface';
 import { Injectable } from '@angular/core';
 import { Line } from './line.model';
 import { OptimizationStrategy } from './optimization.strategy';
-import { Size } from './size.mode';
+import { RelativeSize } from './relative-size.model';
 import { Wall } from './wall.model';
 
 @Injectable({ providedIn: 'root' })
@@ -12,14 +12,15 @@ export class MasonryService {
 
     constructor(private strategy: OptimizationStrategy) { }
 
-    public construct(elements: ElementInfo[], lineWidth: number, lineHeight: number, direction: Direction) {
-        const size = new Size(lineWidth, lineHeight, direction);
+    public construct(elements: ElementInfo[], lineWidth: number, lineHeight: number, direction: Direction): ElementInfo[] {
+        const size = new RelativeSize(lineWidth, lineHeight, direction);
         size.mainAxis -= this.roundingСompensation;
         const wall = this.build(elements, size, [new Wall()]);
         wall.fitLines();
+        return [].concat(...wall.lines.map(x => x.elements));
     }
 
-    private build(elements: ElementInfo[], size: Size, cache: Wall[]): Wall {
+    private build(elements: ElementInfo[], size: RelativeSize, cache: Wall[]): Wall {
         if (cache.length > elements.length) {
             return cache[elements.length].clone();
         }

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Size } from './size.mode';
+import { RelativeSize } from './relative-size.model';
 import { Wall } from './wall.model';
 
 @Injectable({ providedIn: 'root' })
 export class OptimizationStrategy {
-    public evaluate(wall: Wall, size: Size): number {
+    public evaluate(wall: Wall, size: RelativeSize): number {
         if (!wall || !size) {
             return 0;
         }

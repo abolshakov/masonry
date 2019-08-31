@@ -17,6 +17,7 @@ export class MasonryService {
         size.mainAxis -= this.roundingСompensation;
         const wall = this.build(elements, size, [new Wall()]);
         wall.fitLines();
+        console.log(wall);
         return [].concat(...wall.lines.map(x => x.elements));
     }
 

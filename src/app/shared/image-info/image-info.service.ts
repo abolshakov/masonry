@@ -7,9 +7,7 @@ export class ImageInfoService {
     public retrive(images: HTMLImageElement[]): ElementInfo[] {
         return images.map(image => {
             const margins = this.margins(image);
-            const width = image.naturalWidth + margins.width;
-            const height = image.naturalHeight + margins.height;
-            return new ImageInfo(width, height);
+            return new ImageInfo(image.naturalWidth, image.naturalHeight, margins.width, margins.height);
         });
     }
 
@@ -18,8 +16,13 @@ export class ImageInfoService {
             const margins = this.margins(image);
             const width = info[i].width - margins.width;
             const height = info[i].height - margins.height;
-            image.setAttribute('width', width.toString());
-            image.setAttribute('height', height.toString());
+            if (width > height) {
+                image.setAttribute('width', width.toString());
+            } else {
+                image.setAttribute('height', height.toString());
+            }
+
+            console.log(`${info[i].width} x ${info[i].height} | ${image.clientWidth + margins.width} x ${image.clientHeight + margins.height}`);
         });
     }
 

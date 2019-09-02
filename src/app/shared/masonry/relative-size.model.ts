@@ -1,20 +1,27 @@
 import { Direction } from './direction.enum';
+import { Size } from './size.model';
 
 export class RelativeSize {
+    private _size: Size;
+
+    public get size(): Size {
+        return new Size(this._size.width, this._size.height);
+    }
+
     public get mainAxis(): number {
-        return this[this.mainAxisName];
+        return this._size[this.mainAxisName];
     }
 
     public set mainAxis(value: number) {
-        this[this.mainAxisName] = value;
+        this._size[this.mainAxisName] = value;
     }
 
     public get crossAxis(): number {
-        return this[this.crossAxisName];
+        return this._size[this.crossAxisName];
     }
 
     public set crossAxis(value: number) {
-        this[this.crossAxisName] = value;
+        this._size[this.crossAxisName] = value;
     }
 
     public get mainAxisName(): string {
@@ -25,13 +32,7 @@ export class RelativeSize {
         return this.direction === Direction.row ? 'height' : 'width';
     }
 
-    public get ratio(): number {
-        return this.crossAxis ? this.mainAxis / this.crossAxis : 0;
+    constructor(size: Size, public direction: Direction) {
+        this._size = new Size(size.width, size.height);
     }
-
-    constructor(
-        public width: number,
-        public height: number,
-        public direction: Direction
-    ) { }
 }

@@ -4,20 +4,17 @@ import { Injectable } from '@angular/core';
 import { Line } from './line.model';
 import { OptimizationStrategy } from './optimization.strategy';
 import { RelativeSize } from './relative-size.model';
+import { Size } from './size.model';
 import { Wall } from './wall.model';
 
 @Injectable({ providedIn: 'root' })
 export class MasonryService {
-    private readonly roundingСompensation = 1;
-
     constructor(private strategy: OptimizationStrategy) { }
 
-    public construct(elements: ElementInfo[], lineWidth: number, lineHeight: number, direction: Direction): ElementInfo[] {
-        const size = new RelativeSize(lineWidth, lineHeight, direction);
-        size.mainAxis -= this.roundingСompensation;
-        const wall = this.build(elements, size, [new Wall()]);
+    public construct(elements: ElementInfo[], lineSize: Size, direction: Direction): ElementInfo[] {
+        const relativeSize = new RelativeSize(lineSize, direction);
+        const wall = this.build(elements, relativeSize, [new Wall()]);
         wall.fitLines();
-        console.log(wall);
         return [].concat(...wall.lines.map(x => x.elements));
     }
 

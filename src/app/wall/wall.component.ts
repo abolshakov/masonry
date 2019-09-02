@@ -7,7 +7,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren
-  } from '@angular/core';
+} from '@angular/core';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { Direction } from '../shared/masonry/direction.enum';
 import { ElementInfo } from '../shared/masonry/element-info.interface';
@@ -16,6 +16,7 @@ import { ImageInfoService } from '../shared/image-info/image-info.service';
 import { ImageLoadService } from '../shared/image-info/image-load.service';
 import { ImagesService as ImageSourceService } from '../shared/image-source.service';
 import { MasonryService } from '../shared/masonry/masonry.service';
+import { Size } from '../shared/masonry/size.model';
 
 @Component({
   selector: 'msn-wall',
@@ -73,9 +74,8 @@ export class WallComponent implements AfterViewInit, OnDestroy {
   }
 
   private construct(info: ElementInfo[]) {
-    const lineWidth = this.containerRef.nativeElement.clientWidth;
-    const lineHeight = Math.min(window.innerHeight, window.innerWidth) / 3;
-    const updatedInfo = this.masonry.construct(info, lineWidth, lineHeight, Direction.row);
+    const lineSize = new Size(this.containerRef.nativeElement.clientWidth, Math.min(window.innerHeight, window.innerWidth) / 3);
+    const updatedInfo = this.masonry.construct(info, lineSize, Direction.row);
     this.imageInfo.update(this.imageRefs.map(r => r.nativeElement), updatedInfo);
   }
 }

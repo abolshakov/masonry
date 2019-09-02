@@ -1,58 +1,21 @@
 import { ElementInfo } from '../masonry/element-info.interface';
+import { Size } from '../masonry/size.model';
 
-export class ImageInfo implements ElementInfo {
-    private _width: number;
-    private _height: number;
-    private _marginsWidth: number;
-    private _marginsHeight: number;
-
-    public get width(): number {
-        return this._width + this._marginsWidth;
+export class ImageInfo extends Size implements ElementInfo {
+    public get size(): Size {
+        return new Size(this.width, this.height);
     }
 
-    public set width(value: number) {
-        this.resise(value - this._marginsWidth, null);
+    public set size(value: Size) {
+        this._width = value.width;
+        this._height = value.height;
     }
 
-    public get height(): number {
-        return this._height + this._marginsHeight;
-    }
-
-    public set height(value: number) {
-        this.resise(null, value - this._marginsHeight);
-    }
-
-    private get ratio(): number {
-        return this._height ? this._width / this._height : 0;
-    }
-
-    constructor(width: number, height: number, marginsWidth: number, marginsHeight: number) {
-        this._width = width;
-        this._height = height;
-        this._marginsWidth = marginsWidth;
-        this._marginsHeight = marginsHeight;
+    constructor(size: Size, public margins: Size) {
+        super(size.width, size.height);
     }
 
     public clone(): ElementInfo {
-        return new ImageInfo(this._width, this._height, this._marginsWidth, this._marginsHeight);
-    }
-
-    private resise(width: number | null, height: number | null) {
-        if (!width && !height) {
-            return;
-        }
-        if (width && height) {
-            this._width = width;
-            this._height = height;
-            return;
-        }
-        const ratio = this.ratio;
-        if (width) {
-            this._width = width;
-            this._height = ratio ? (width / ratio) : 0;
-            return;
-        }
-        this._width = ratio * height;
-        this._height = height;
+        return new ImageInfo(new Size(this.size.width, this.size.height), new Size(this.margins.width, this.margins.height));
     }
 }

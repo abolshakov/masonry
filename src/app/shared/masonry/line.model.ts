@@ -2,6 +2,9 @@ import { ElementInfo } from './element-info.interface';
 import { RelativeSize } from './relative-size.model';
 
 export class Line {
+    private readonly roundingCompensation = 0.5;
+
+    private _size: RelativeSize;
     private _elements: ElementInfo[] = [];
     private _freeSpace: number;
 
@@ -13,8 +16,10 @@ export class Line {
         return this._freeSpace;
     }
 
-    public constructor(private size: RelativeSize) {
-        this._freeSpace = this.size.mainAxis;
+    public constructor(relativeSize: RelativeSize) {
+        this._size = new RelativeSize(relativeSize.size, relativeSize.direction);
+        this._size.mainAxis -= this.roundingCompensation;
+        this._freeSpace = this._size.mainAxis;
     }
 
     public assign(element: ElementInfo): boolean {
@@ -22,31 +27,56 @@ export class Line {
             return false;
         }
         const clone = element.clone();
-        clone[this.size.crossAxisName] = this.size.crossAxis;
-        const size = new RelativeSize(clone.width, clone.height, this.size.direction);
-        const remainingSpace = this._freeSpace - size.mainAxis;
+        const relativeSize = new RelativeSize(clone.size, this._size.direction);
+        const relativeMargins = new RelativeSize(clone.margins, this._size.direction);
+        relativeSize.crossAxis = this._size.crossAxis - relativeMargins.crossAxis;
+        let remainingSpace = this._freeSpace - relativeSize.mainAxis - relativeMargins.mainAxis;
+
         if (remainingSpace < 0) {
             if (this._elements.length === 0) {
-                clone[this.size.mainAxisName] = this.size.mainAxis;
-                this._elements.push(clone);
-                this._freeSpace = 0;
-                return true;
+                relativeSize.mainAxis = this._size.mainAxis - relativeMargins.mainAxis;
+                remainingSpace = 0;
+            } else {
+                return false;
             }
-            return false;
         }
+        clone.size = relativeSize.size;
         this._elements.push(clone);
         this._freeSpace = remainingSpace;
         return true;
     }
 
     public fit() {
-        console.log('BEFORE FIT', this._freeSpace);
         if (!this._freeSpace) {
             return;
         }
-        const ratio = (this.size.mainAxis - this._freeSpace) / this.size.crossAxis;
-        const cross = this.size.mainAxis / ratio;
-        this.elements.forEach(x => x[this.size.crossAxisName] = cross);
-        console.log('FIT', this.size.width - this._elements.map(x => x.width).reduce((prev, curr) => prev + curr, 0));
+        const rise = this.crossAxisRise();
+        this.elements.forEach(x => {
+            const relativeSize = new RelativeSize(x.size, this._size.direction);
+            relativeSize.crossAxis += rise;
+            x.size = relativeSize.size;
+        });
+        this._freeSpace = this._size.mainAxis - this._elements
+            .map(x => {
+                const relativeSize = new RelativeSize(x.size, this._size.direction);
+                const relativeMargins = new RelativeSize(x.margins, this._size.direction);
+                return relativeSize.mainAxis + relativeMargins.mainAxis;
+            })
+            .reduce((prev, curr) => prev + curr, 0);
+    }
+
+    private crossAxisRise(): number {
+        const crossAxisIncrement = 1;
+        let freeSpaceDecreased = this._size.mainAxis;
+        this.elements.forEach(x => {
+            const relativeSize = new RelativeSize(x.size, this._size.direction);
+            const relativeMargins = new RelativeSize(x.margins, this._size.direction);
+            relativeSize.crossAxis += crossAxisIncrement;
+            freeSpaceDecreased -= relativeSize.mainAxis + relativeMargins.mainAxis;
+        });
+
+        const delta = this._freeSpace - freeSpaceDecreased;
+        const rise = delta ? this._freeSpace / delta : 0;
+        return rise;
     }
 }

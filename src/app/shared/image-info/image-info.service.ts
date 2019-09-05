@@ -11,7 +11,6 @@ export class ImageInfoService {
 
     public update(images: HTMLImageElement[], info: ElementInfo[]) {
         images.forEach((image, i) => {
-            const margins = this.imageMargins(image);
             const width = info[i].width;
             const height = info[i].height;
             if (width > height) {

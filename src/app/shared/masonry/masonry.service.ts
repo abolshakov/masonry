@@ -43,6 +43,6 @@ export class MasonryService {
             }
         }
         cache.push(optimalWall);
-        return optimalWall;
+        return optimalWall.clone();
     }
 }
